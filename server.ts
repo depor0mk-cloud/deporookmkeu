@@ -1,12 +1,23 @@
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { Telegraf } from 'telegraf';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Initialize Telegram Bot
+const bot = new Telegraf(process.env.BOT_TOKEN || '');
+
+bot.start((ctx) => ctx.reply('Привет! Я бот для управления кланом.'));
+bot.on('text', (ctx) => ctx.reply(`Вы написали: ${ctx.message.text}`));
+
+bot.launch().then(() => {
+  console.log('Telegram bot started');
+});
 
 // Serve static files from the 'dist' directory
 app.use(express.static(path.join(__dirname, 'dist')));
